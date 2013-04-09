@@ -1,0 +1,73 @@
+MFGAJKYSJUMKTAURYJCMJXFMLJLFAYSJAYDLKURSUIUML
+JMJGJMXJARMUGMFCLUGCJAATYSFAFPPOTWFYTUCATCPFM
+FOOJOPMUXMFGGTCXFPPMUNTGFYTUCFOXUMTYSGAXFGJYS
+JUMKXJUGJYMKCDGHJMYSJUMKFCLUYSJMFMJFAURGFYSJG
+FYTWAFCLYSJUMJYTWFOWUGPDYJMAWTJCWJYSJWJCYMFOW
+UCWJPYTCMFGAJKYSJUMKTAYSFYURFMMUITCXMJAJFMWSU
+CYSJWUGPDYFYTUCFOFAPJWYAURMFGAJKYSJUMKYKPTWFO
+OKRFOOATCYUUCJURYIUFMJFAYSJWUGPDYFYTUCFOWUGPO
+JNTYKURPMUHOJGAMJOFYJLYUFMMUITCXFCLYSJWUGPDYF
+YTUCURWUCWMJYJMFGAJKCDGHJMAHUYSFMJFAFMJVJMKFW
+YTVJSUIJVJMDPYUCUITCYJMFWYTUCHJYIJJCYSJAJYIUM
+JAJFMWSAYMJFGASFAHJJCAPUMFLTWIJPMUPUAJYUHMTLX
+JYSJAJMJAJFMWSAYMJFGAFCLTCLUTCXAUUHYFTCCJITCA
+TXSYAFCLCJIMJADOYATCHUYSFMJFA
+
+*I*S**THE****S**TE**E*I**E*I*THEST*****H*****
+E*E*E**ES*****I*****ESS*THIS*****************
+*********************************************
+*********************************************
+*********************************************
+*********************************************
+*********************************************
+*********************************************
+*********************************************
+*********************************************
+*********************************************
+*********************************************
+*********************************************
+*****************************
+
+SINGLE CHARACTER FREQUENCIES
+------------------------------
+ A     42 *       N      2
+ B      0        O     17
+ C     39 *       P     19
+ D      9        Q      0
+ E      0        R     10
+ F     57 *       S     27
+ G     25        T     33
+ H      9        U     57*
+ I     11        V      3
+ J     78 **       W     23
+ K     15        X     12
+ L     14        Y     57*
+ M     55 *       Z      0
+
+
+ 10 MOST FREQUENT DIGRAMS
+--------------------------
+ YS     20
+ MJ     16
+ SJ     15
+ FM     12
+ TC     12
+ JM     11
+ MF     11
+ UC     11
+ AJ     10
+ UM     10
+
+
+ 10 MOST FREQUENT TRIGRAMS
+---------------------------
+ YSJ     15
+ FCL      6
+ FGA      6
+ FYT      6
+ JUM      6
+ MJF      6
+ SJU      6
+ TUC      6
+ YTU      6
+ FMJ      5

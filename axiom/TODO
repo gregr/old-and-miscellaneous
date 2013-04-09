@@ -1,0 +1,9 @@
+destructors shouldn't throw (fix thread and net libraries)
+memory allocation
+process spawning and communication
+signals / timers
+ffi
+asynchronous IO management (files, networking)
+gc
+codegen
+other device IO (graphics, sound, etc.)

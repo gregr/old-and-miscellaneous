@@ -1,0 +1,88 @@
+general:
+lambda-binding of syntactic aliases
+macro expansion also expands literals (not symbols/lists) to constructor form *
+close_syntax not necessary with Syntax constructor? *
+rename Syntax to SynClo
+eliminate uses of __prim_case *
+allow __def_syntax to create arbitrary variable synonyms when body is a symbol *
+boxed value mutability (pack, setfield, free references)
+quasi-quote aka template-quote
+rhs-slice
+static and dynamic arrays
+record syntax
+type case
+try to eliminate uses of Lit exprs for non-unboxed data:
+    macro application? expr.py
+    tagEnv?
+    macro?
+    syntax synonyms?
+    unit from nil during expansion?
+    build module objects as records *
+    manually construct module mode values (public and private as syms?) *
+wrap all special forms in macros that macro-expand arguments appropriately?
+non-source continuation-passing interpreter? pros/cons with tracing?
+many special forms still need to perform syntax expansion of their arguments *
+
+pattern matching:
+quote pattern expansion won't be necessary if quote is non-primitive *
+expand boxed literal to constructor pattern (via non-prim quote's technique?) *
+function argument patterns
+pattern guards with letrec clauses
+
+primitive syntax:
+__throw as an expr?
+let_syntax
+maybe abstractions can take synclos idents as binders to capture them?
+make sure top-level statements really are at the top
+__macro isn't really necessary explicitly? (
+procs that simply return their last argument have implicit tail-positions
+
+ir syntax:
+multi-arg procs as an optimized form of adjacent lambdas (for supercombinators)
+
+modules:
+only makeModule needs to be primitive? improved __def_syntax used for include
+module # evaluate a module and return it without binding it to a name locally
+import # evaluate the module and also bind it to the same name locally
+include # create local bindings for the given names of a module
+includeAllExcept # create local bindings for all the names except those given
+modulePaste (after file i/o exists) # inline the program text of the given file
+
+parser:
+source attrs that include filename or something analogous *
+intrinsic macros with proper syntactic closures
+extended brackets
+meta symbols
+strictness mode switches
+
+strictness modes:
+           delays and forces explicit (low level)
+           delays explicit, forces implicit (high level; strict by default)
+           delays and forces implicit (high level; lazy semantics):
+                  implicit delays chosen for bottom-avoidance while seeking
+                  an optimal evaluation strategy (speculatively eager)
+
+primitives:
+arithmetic/comparisons
+file i/o
+concurrency
+network i/o
+processes/signals
+system info
+datetime
+
+debugger:
+error tracebacks could still use some work
+more interactivity
+
+types:
+type tags as they are aren't quite right; current type tags should just be node tags; type tags should actually be the tags given to nodes created by type constructors/exprs
+type expressions
+data flow analysis (instantiate function applications, possibly specialize)
+
+libraries:
+containers
+regexes (with pattern matching support)
+graphics
+
+runtime:

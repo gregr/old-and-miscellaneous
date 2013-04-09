@@ -1,0 +1,53 @@
+ SINGLE CHARACTER FREQUENCIES
+------------------------------
+ A    327 * 3	 N    279 * 7
+ B     52	 O    304 * 5
+ C    113	 P     85
+ D    186 * 10	 Q      1
+ E    551 * 1	 R    266 * 8
+ F     74	 S    308 * 4
+ G     77	 T    421 * 2
+ H    238 * 9	 U    141
+ I    287 * 6	 V     22
+ J      3	 W     71
+ K     30	 X      9
+ L    148 * 11	 Y     78
+ M     91	 Z      3
+
+
+ 15 MOST FREQUENT DIGRAMS
+--------------------------
+ HE    140
+ TH    122
+ IN     81
+ NT     76
+ RE     73
+ ER     72
+ ES     64
+ TO     63
+ ET     55
+ OR     55
+ ST     52
+ ON     49
+ OU     47
+ EA     46
+ ED     43
+
+
+ 15 MOST FREQUENT TRIGRAMS
+---------------------------
+ THE     98
+ ING     28
+ ENT     26
+ INT     24
+ REA     22
+ NTH     21
+ ERS     20
+ ESS     20
+ STU     19
+ AND     18
+ HER     18
+ TUD     18
+ ALL     17
+ COU     17
+ HEI     17

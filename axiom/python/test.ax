@@ -1,0 +1,834 @@
+## todo: many things should be private
+
+__def_var _tag
+  __abstract _tag x
+    __call __tag (x)
+
+__def_var head
+  __abstract head xs (__unpack \: 0 xs)
+__def_var tail
+  __abstract tail xs (__unpack \: 1 xs)
+
+__def_var typeErr
+  __abstract typeErr x
+    throw "type error" ## todo: include description of x
+
+__def_var list_foldl
+  __abstract list_foldl f
+    __abstract list_foldl__1 acc
+      __abstract list_foldl__2 xs
+        __switch (_tag xs) (typeErr xs)
+          (Nil) acc
+          (\:)
+            list_foldl f (f acc (head xs)) (tail xs)
+
+__def_var list_map
+  __abstract list_map f
+    __abstract list_map__1 xs
+      __switch (_tag xs) (typeErr xs)
+        (Nil) Nil
+        (\:)
+          f (head xs):list_map f (tail xs)
+
+## defun list_map (f xs)
+##   __prim_case xs
+##     [] []
+##     (x:xs) (f x:list_map f xs)
+
+__def_var strToSym
+  __abstract strToSym s
+    __call __string_to_symdesc (s)
+
+## __def_var _literal_tag_names
+##   "Char":"String":"Float":"Int":Nil
+
+## __def_var _literal_tag_syms (list_map strToSym _literal_tag_names)
+
+__def_syntax quoteSym
+  __macro
+    __abstract quoteSym tsenv
+      __abstract quoteSym__1 usenv
+        __abstract quoteSym__2 form
+          __switch (_tag (tail form)) (typeErr (tail form))
+            (\:)
+              __switch (_tag (tail (tail form))) (typeErr (tail (tail form)))
+                (Nil)
+                  ((Symbol (__unboxed close_syntax)):
+                   (Symbol (__unboxed tsenv)):(Symbol (__unboxed Nil)):
+                   ((Symbol (__unboxed Symbol)):
+                    ((Symbol (__unboxed __unboxed)):(head (tail form)):Nil):
+                    Nil):Nil)
+
+__def_var close_syntax
+  __abstract close_syntax senv
+    __abstract close_syntax__1 frees
+      __abstract close_syntax__2 form
+        __call __syntactic_closure (senv frees form)
+
+__def_var quoteExpand
+  __abstract quoteExpand tsenv
+    __abstract quoteExpand__1 x
+      __switch (_tag x) (typeErr x)
+        (Syntax) (Syntax (syntax_env x) (syntax_frees x)
+                  (quoteExpand tsenv (syntax_form x)))
+        (Nil) (quoteSym Nil)
+        (\:) ## list_foldr
+          ((quoteSym \:):(quoteExpand tsenv (head x)):
+           (quoteExpand tsenv (tail x)):Nil)
+        (Symbol)
+          (quoteSym Symbol):((quoteSym __unboxed):x:Nil):Nil
+        (Char)
+          (quoteSym Char):((quoteSym __unboxed):x:Nil):Nil
+        (String)
+          (quoteSym String):((quoteSym __unboxed):x:Nil):Nil
+        (Float)
+          (quoteSym Float):((quoteSym __unboxed):x:Nil):Nil
+        (Int)
+          (quoteSym Int):((quoteSym __unboxed):x:Nil):Nil
+
+## todo: move lower
+__def_var macro_expand
+  __abstract macro_expand senv
+    __abstract macro_expand form
+##defun macro_expand (senv form)
+      __call __macro_expand (senv form)
+
+__def_var strip_syntax
+  __abstract strip_syntax form
+    __switch (_tag form) form
+      (\:) (strip_syntax (head form):strip_syntax (tail form))
+      (Syntax) (strip_syntax (syntax_form form))
+
+__def_syntax quote
+  __macro
+    __abstract quote tsenv
+      __abstract quote__1 usenv
+        __abstract quote__2 form
+          __switch (_tag (tail form)) (typeErr (tail form))
+            (\:)
+              __switch (_tag (tail (tail form))) (typeErr (tail (tail form)))
+                (Nil)
+##                  close_syntax tsenv Nil
+                    quoteExpand tsenv (strip_syntax (head (tail form)))
+  
+__def_syntax squote
+  __macro
+    __abstract squote tsenv
+      __abstract squote__1 usenv
+        __abstract squote__1 form
+          __switch (_tag form) (throw "ill-formed squote")
+            (\:)
+              __switch (_tag (__unpack \: 1 form)) (throw "ill-formed squote")
+                (\:)
+                  __switch (_tag (__unpack \: 1
+                    (__unpack \: 1 form))) (throw "ill-formed squote")
+                    (\:)
+                      __switch (_tag (__unpack \: 1
+                        (__unpack \: 1
+                          (__unpack \: 1 form)))) (throw "ill-formed squote")
+                        (Nil)
+                          ((close_syntax tsenv Nil (quote close_syntax)):
+                           (__unpack \: 0 (__unpack \: 1 form)):
+                           (close_syntax tsenv Nil (quote Nil)):
+                           ((close_syntax tsenv Nil (quote quote)):
+                            (__unpack \: 0 (__unpack \: 1
+                                            (__unpack \: 1 form))):
+                            Nil):Nil)
+
+## todo: this will have to go when quote changes
+## __def_syntax getenv
+##   __macro
+##     __abstract getenv tsenv
+##       __abstract getenv__1 usenv
+##         __abstract getenv__2 form
+##           (squote tsenv quote):usenv:Nil
+
+##__def_var _env (getenv) ## useful for testing
+
+__def_syntax __tagswitch
+  __macro
+    __abstract __tagswitch tsenv
+      __abstract __tagswitch__1 usenv
+        __abstract __tagswitch__1 form
+          __switch (_tag form) (throw "ill-formed __tagswitch")
+            (\:)
+              __switch (_tag (__unpack \: 1 form))
+                (throw "ill-formed __tagswitch")
+                (\:)
+                  (squote tsenv __switch:
+                   (squote tsenv _tag:
+                    (__unpack \: 0 (__unpack \: 1 form)):Nil):
+                   (__unpack \: 1 (__unpack \: 1 form)))
+
+__def_syntax __prim_case __case ## temporary
+
+__def_var get_field
+  __abstract get_field node
+    __abstract get_field__1 field
+      __get_field field node
+
+__def_syntax __get_fieldm
+  __macro
+    __abstract __get_fieldm tsenv
+      __abstract __get_fieldm__1 usenv
+        __abstract __get_fieldm__1 form
+          __prim_case form
+            Nil (throw "ill-formed _get_field")
+            (_:args)
+              __prim_case args
+                Nil (throw "ill-formed _get_field")
+                (node:args)
+                  __prim_case args
+                    Nil (throw "ill-formed _get_field")
+                    (field:args)
+                      __prim_case args
+                        (_:_) (throw "ill-formed _get_field")
+                        Nil ((squote tsenv get_field):node:
+                          ((squote tsenv quote):field:Nil):Nil)
+
+__def_var gensym
+  __abstract gensym _
+    __call __gensym ()
+
+__def_var __list_pat
+  __abstract __list_pat tsenv
+    __abstract __list_pat__0 err
+      __abstract __list_pat__1 body
+        __abstract __list_pat__2 discrim
+          __abstract __list_pat__3 contDiscrim
+            __abstract __list_pat__4 xs
+              __tagswitch xs (typeErr xs)
+                (Nil)
+                  ((squote tsenv __tagswitch):discrim:err:
+                   (((squote tsenv Nil):Nil):body:Nil):Nil)
+                (\:)
+                  (((squote tsenv __abstract):(quote _lp0):(head xs):
+                     ((squote tsenv __abstract):(quote _lp1):contDiscrim:
+                      (__list_pat tsenv err body contDiscrim contDiscrim
+                       (tail xs)):Nil):Nil):
+                   ((squote tsenv head):discrim:Nil):
+                   ((squote tsenv tail):discrim:Nil):Nil)
+
+__def_syntax __list_case ## minimize some pain before case syntax is introduced
+  __macro
+    __abstract __list_case tsenv
+      __abstract __list_case__1 usenv
+        __abstract __list_case__1 form
+          (__list_pat tsenv (head (tail (tail (tail form))))
+           (head (tail (tail (tail (tail form))))) (head (tail form))
+           (gensym ()) (head (tail (tail form))))
+
+__def_syntax lambda
+  __macro
+    __abstract lambda tsenv
+      __abstract lambda__1 usenv
+        __abstract lambda__2 form
+          __list_case form (_ name params body) (throw "ill-formed lambda")
+            __letrec ((inner (__abstract inner params
+                              (__tagswitch params (throw "bad lambda params")
+                               ((Nil) body)
+                               ((\:) ((squote tsenv __abstract):name:
+                                      (head params):(inner (tail params)):
+                                      Nil))))))
+              inner params
+
+__def_syntax defsyn
+  __macro
+    lambda defsyn (tsenv usenv form)
+      __list_case form (_ name body) (throw "ill-formed defsyn")
+        ((squote tsenv __def_syntax):name:((squote tsenv __macro):body:Nil):Nil)
+
+defsyn defmac
+  lambda defmac (tsenv usenv form)
+    __list_case form (_ name params body) (throw "ill-formed defmac")
+      ((squote tsenv defsyn):name:((squote tsenv lambda):name:params:body:Nil):Nil)
+
+## __def_syntax defun
+##   __macro
+## defsyn defun
+##     lambda defun (tsenv usenv args)
+defmac defun (tsenv usenv form)
+  __list_case form (_ name params body) (throw "ill-formed defun")
+    ((squote tsenv __def_var):name:((squote tsenv lambda):name:params:body:Nil):Nil)
+
+defun throw (exc) (__call __throw (exc))
+
+defun id (x) x
+defun print (x) (__call __print (x))
+
+## __def_var __list
+##   __abstract __list consSym
+##     __abstract __list__1 xs
+defun __list (consSym nilSym xs)
+      __prim_case xs
+        Nil nilSym
+        (y:ys)
+          consSym:y:(__list consSym nilSym ys):Nil
+
+## __def_syntax list
+##   __macro
+## ##     __abstract list tsenv
+## ##       __abstract list__1 usenv
+## ##         __abstract list__2 xs
+##     lambda
+
+defmac list (tsenv usenv form)
+  close_syntax usenv Nil
+    __list (squote tsenv (:)) (squote tsenv Nil) (tail form)
+
+defmac if (tsenv usenv form)
+  __list_case form (_ cond then else) (throw "ill-formed if-statement")
+    [(squote tsenv __prim_case) cond
+     [(squote tsenv False) else]
+     [(squote tsenv True) then]
+     [(squote tsenv _) [(squote tsenv throw)
+                     "if-condition must return True or False"]]]
+
+defun syntax_env (s) (__unpack Syntax 0 s)
+defun syntax_frees (s) (__unpack Syntax 1 s)
+defun syntax_form (s) (__unpack Syntax 2 s)
+
+defun is_ident (x)
+  __tagswitch x False
+    (Symbol) True
+    (Syntax) (is_ident (syntax_form x))
+
+defun ident_eq (senv1 s1 senv2 s2)
+  __call __ident_eq (senv1 s1 senv2 s2)
+
+defun constructorSet (senv sym)
+  __call __constructor_set ((__tags) senv sym)
+
+defun destructuredForm (senv sym) ## todo: better than constructorSet?
+  __call __destructured_form ((__tags) senv sym)
+
+defun twice (f x) (f (f x))
+
+defun unzip2 (pairs)
+  __tagswitch pairs (typeErr pairs)
+    (Nil) [[] []]
+    (\:)
+      __letrec ((fst (head pairs))
+                (rest (unzip2 (tail pairs)))
+                (x (head fst))
+                (y (head (tail fst)))
+                (xs (head rest))
+                (ys (head (tail rest))))
+        [(x:xs) (y:ys)]
+
+defun zip2 (xs ys err)
+  __tagswitch xs (err ())
+    (\:)
+      __tagswitch ys (err ())
+        (\:) ([(head xs) (head ys)]:(zip2 (tail xs) (tail ys) err))
+    (Nil)
+      __tagswitch ys (err ())
+        (Nil) []
+
+defmac __let (tsenv usenv form)
+  __list_case form (_ bindings body) (typeErr form)
+    (lambda __let_inner (varsVals)
+      ([(squote tsenv lambda) (quote _let_body) (head varsVals) body]:
+       (head (tail varsVals)))) (unzip2 bindings)
+
+__operator (;) infix left 2
+defun \; (a b) b
+
+defun destructureConsAlt (tsenv usenv dscrm consPat altBody)
+  __let ((dform (destructuredForm usenv (head consPat))))
+    __tagswitch dform (throw "invalid constructor pattern")
+      (\:)
+        __letrec ((unpacks (list_map (lambda mkunpack (n)
+                                       [(squote tsenv __unpack)
+                                        (close_syntax usenv Nil (head consPat))
+                                        n dscrm])
+                             (tail dform)))
+                  (binders (zip2 (tail consPat) unpacks
+                             (lambda err (_)
+                               (throw "invalid constructor pattern")))))
+          [[(head consPat)]
+           (list_foldl (lambda subst (body binder)
+                         (__subst_var (head (tail binder)) usenv (head binder)
+                           usenv body))
+             altBody binders)]
+
+defun _lengths_eq (xs ys)
+  __prim_case xs
+    Nil
+      __prim_case ys
+        Nil True
+        (_:_) False
+    (x:xs)
+      __prim_case ys
+        Nil False
+        (y:ys) (_lengths_eq xs ys)
+
+defun __is_cons (senv ident args) ## todo: constructorSet the best prim to have?
+##  __call __is_cons (ident args)
+  __prim_case (constructorSet senv ident)
+    Nil False
+    (c:_)
+      __list_case c (tag targs) (throw "strange cons form")
+        if (_lengths_eq args targs) True
+          (throw "constructor pattern with incorrect arity")
+
+defmac testIsCons (tsenv usenv form)
+  __list_case form (_ ident cargs) (throw "testIsCons takes 2 args")
+    [(squote tsenv quote) (is_cons usenv ident cargs)]
+
+defun revappend (xs ys)
+  __prim_case xs
+    [] ys
+    (x:xs) (revappend xs (x:ys))
+    _ (throw "what!?")
+
+defun reverse (xs) (revappend xs [])
+defun append (xs ys) (revappend (reverse xs) ys)
+
+__operator (.) infixTight left 20
+__def_syntax (.) __get_fieldm
+
+defun __insert_cons (acc cons rest senv)
+  __prim_case acc
+    [] [[cons [rest]]]
+    (group:groups)
+      if (ident_eq senv group.head senv cons)
+        [cons (rest:group.tail.head)]:groups
+        group:(__insert_cons groups cons rest senv)
+
+defun __gensym_per (xs)
+  list_map (lambda _ (_) (gensym ())) xs
+
+defun __gen_cons_args (senv cons)
+  __gensym_per (constructorSet senv cons).head.tail.head
+
+defun __alt_cons (vars cons alts failAlt usenv tsenv)
+  __prim_case (__gen_cons_args usenv cons)
+    args [(cons:args) (__match (append args vars) alts failAlt usenv tsenv)]
+
+defun __make_def_alt (body tsenv) [(squote tsenv _) body]
+
+defun __alts_cons (groups vars failAlt usenv tsenv)
+  __prim_case groups
+    [] [(__make_def_alt failAlt tsenv)]
+    (group:groups)
+      __prim_case group
+        (cons:more)
+          __list_case more (alts) (throw "todo")
+            ((__alt_cons vars cons (reverse alts) failAlt usenv tsenv):
+             (__alts_cons groups vars failAlt usenv tsenv))
+
+defun __match_cons (acc vars alts failAlt usenv tsenv)
+  __prim_case alts
+    []
+      __prim_case acc
+        [] failAlt
+        (_:_) ((squote tsenv __prim_case):vars.head:
+               (__alts_cons acc vars.tail failAlt usenv tsenv))
+    (alt:alts)
+      __prim_case alt
+        more
+          __list_case more (pats body) (throw "ill-formed match-alt")
+            __prim_case pats
+              [] body
+              (pat:pats)
+                __tagswitch pat () ## default case, todo literals
+                  (Symbol)
+                    if (__is_cons usenv pat [])
+                      (__match_cons (__insert_cons acc pat [pats body] usenv) vars
+                       alts failAlt usenv tsenv)
+                      __match_cons acc vars [] (__match_vars [] pat alt vars alts
+                                                failAlt usenv tsenv) usenv tsenv
+                  (Nil \:)
+                    __prim_case pat
+                      [] (__match_cons (__insert_cons acc () [pats body] usenv)
+                          vars alts failAlt usenv tsenv)
+                      (x:xs) ## todo check for __unboxed or quote ident first
+                        __tagswitch x (throw "ill-formed compound pattern")
+                          (Symbol)
+                            if (__is_cons usenv x xs)
+                              (__match_cons (__insert_cons acc x
+                                            [(append xs pats) body] usenv)
+                               vars alts failAlt usenv tsenv)
+                              throw "unrecognized constructor"
+
+defun __subst_var (expr senv var bsenv body)
+  __prim_case var
+    (quote _) body ## no substitution for _ patterns
+    _
+      __tagswitch body body
+        (Nil \:)
+          list_map (__subst_var expr senv var bsenv) body
+        (Symbol)
+          if (ident_eq senv var bsenv body) expr body
+        (Syntax)
+          Syntax (syntax_env body) (syntax_frees body)
+            (__subst_var expr senv var (syntax_env body) (syntax_form body))
+
+defun __match_vars (acc var alt vars alts failAlt usenv tsenv)
+  __prim_case ([alt.head.tail (__subst_var vars.head usenv var usenv alt.tail.head)]:acc)
+    acc
+      __prim_case alts
+        [] (__match vars.tail (reverse acc) failAlt usenv tsenv)
+        (alt:alts1)
+          __prim_case (lambda cont (_) (__match vars.tail (reverse acc)
+                       (__match vars alts failAlt usenv tsenv) usenv tsenv))
+            cont
+              __tagswitch alt.head.head (cont ())
+                (Symbol) ## todo: or ident?
+                  if (__is_cons usenv alt.head.head [])
+                    cont ()
+                    __match_vars acc alt.head.head alt vars alts1 failAlt usenv tsenv
+
+defun __match (vars alts failAlt usenv tsenv)
+  __match_cons [] vars alts failAlt usenv tsenv
+
+defun __match_exprs (exprs alts usenv tsenv)
+  __prim_case (__gensym_per exprs)
+    vars
+      [(squote tsenv lambda) (squote tsenv __match_proc) vars
+       (__match vars alts [(squote tsenv throw) "pattern-match failure"] usenv tsenv)]:exprs
+
+defmac __newCase (tsenv usenv form) ## todo: to be called __case
+  __prim_case form.tail
+    Nil (throw "case expression missing scrutinee")
+    (val:alts) ## todo: syntactically close alts?
+      __match_exprs [val] alts usenv tsenv
+
+defun __mkSwitch (tsenv usenv dscr defAlt alts)
+  __tagswitch alts (throw "expected a list of case alternatives")
+    (Nil) defAlt
+    (\:)
+        if (ident_eq usenv (head (head (head alts))) tsenv (quote __unboxed))
+          ((squote tsenv __switch):dscr:defAlt:
+           (list_map (lambda unbx (alt) ([(head alt)]:(tail alt))) alts))
+          ((squote tsenv __tagswitch):dscr:defAlt:
+           (list_map (lambda dstr (alt)
+                       (destructureConsAlt tsenv usenv dscr (head alt)
+                         (head (tail alt)))) alts))
+
+defun __mkConsCase (tsenv usenv form)
+  __letrec ((args (tail form))
+            (discrim (head args))
+            (rest (tail args))
+            (default (head rest))
+            (alts (list_map (lambda expPat (alt)
+                             (macro_expand usenv (head alt):(tail alt)))
+                   (tail rest)))
+            (dscr (gensym ()))
+            (defVar (head default))
+            (defBody (head (tail default)))
+            (defAlt [(squote tsenv __let) [[defVar dscr]] defBody]))
+    (close_syntax usenv Nil
+      [(squote tsenv __let) [[dscr discrim]]
+       (__mkSwitch tsenv usenv dscr defAlt alts)])
+
+defmac __consCase (tsenv usenv form)
+  __mkConsCase tsenv usenv
+    form
+##    (list_map (macro_expand usenv) form)
+
+defun __operators (tsenv rhs ops)
+  __case ops
+    [] []
+    (op:rest) [(squote tsenv \;) ((squote tsenv __operator):op:rhs)
+               (__operators tsenv rhs rest)]
+
+defun __mkOps (tsenv fixity assoc precOps)
+  __case precOps
+    [] []
+    ((prec:ops):rest)
+      [(squote tsenv \;) (__operators tsenv [fixity assoc prec] ops)
+       (__mkOps tsenv fixity assoc rest)]
+
+defmac __mkMkOps (tsenv usenv form)
+  __case form
+    [_ name fixity assoc]
+      [(squote tsenv defmac) name [(quote tsenv) (quote usenv) (quote form)]
+       [(squote tsenv __mkOps) (quote tsenv)
+        [(squote tsenv quote) fixity] [(squote tsenv quote) assoc] [(squote tsenv __unpack) (squote tsenv \:) 1 (quote form)]]]
+    _ (throw "bad op spec spec")
+
+__mkMkOps infixl infix left
+__mkMkOps infixr infix right
+__mkMkOps infixtl infixTight left
+__mkMkOps infixtr infixTight right
+
+defmac prefix (tsenv usenv form)
+  __operators tsenv [(quote prefix) (quote left) 0] form.tail
+
+prefix \$ \& \!
+infixr
+  0 \=
+  1 (->)
+  2 (,,)
+infixl
+  -1 \,
+  2 (,,,)
+  3 (==) (===)
+  5 \+ \-
+  6 \* \/
+
+defun ap (f x) (f x)
+
+defmac __apm (tsenv usenv form)
+  __case form
+    [_ f x]
+      __tagswitch f [f x]
+        (Nil \:) (append f [x])
+    _ (throw "invalid apply expression")
+__def_syntax \, __apm
+__def_syntax (,,) __apm
+__def_syntax (,,,) __apm
+
+## __def_var \, ap
+## __def_var (,,) ap
+## __def_var (,,,) ap
+
+## test that syntactic closures work by rebinding (:)
+defun testSyntClos ((:))
+    (:) [42]
+print (testSyntClos id)
+
+print "should be 4"
+print
+  __let ((x 4))
+    __let ((x 5) (y x)) y
+
+print "should be 5"
+print
+  __let ((x 4))
+    __letrec ((x 5) (y x)) y
+
+__def_syntax mexp ## test macro_expand
+  __macro
+    lambda mexp (tsenv usenv form)
+          __case form
+            [_ form] [(squote tsenv quote) (macro_expand usenv form)]
+            _ (throw "mexp takes one argument")
+
+__def_syntax pmexp ## test macro_expand
+  __macro
+    lambda pmexp (tsenv usenv form)
+          __case form
+            [_ form] ((print (macro_expand usenv form));[])
+            _ (throw "mexp takes one argument")
+
+defun force (x) (__force x)
+defun _take (ns xs)
+  __case ns
+    [] []
+    (_:ns)
+      __case (force xs)
+        (x:xs) (x:(_take ns xs))
+        [] (throw "not enough elements to take")
+
+__def_var ones (delay (1:ones))
+
+print ## show that delays are not auto-lifted
+ force (delay (delay (throw "this shouldn't throw")))
+
+infixr, 0 (::=) \|
+
+print
+  quote
+    ConcList a ::= Empty
+                 | Single a ## test leading infixOp syntax
+                 | SubSeq (List a)
+                 | Conc (ConcList a) (ConcList a)
+
+print "[::= [ConcList a] [| Empty [| [Single a] [| [SubSeq [List a]] [Conc [ConcList a] [ConcList a]]]]]]"
+
+print
+ quote
+  subseq =
+    [] -> Empty
+    xs -> SubSeq xs
+
+print
+ quote
+  conc =
+    Empty x -> x
+    x Empty -> x
+    (Single x) (SubSeq xs) -> SubSeq (x:xs)
+    x y -> Conc x y
+
+print "[= conc [[-> [Empty x] x] [-> [x Empty] x] [-> [x y] [Conc x y]]]]"
+
+infixtl, 19 (::)
+
+__data Maybe (a) ((Yes (a)) (No ()))
+__data Either (a b) ((Left (a)) (Right (b)))
+__data Pair (a b) ((MkPair ((fst::a) (snd::b))))
+__data Triple (a b c) ((MkTriple ((fst::a) (snd::b) (thd::c))))
+__data Tree (a|b) ((Empty ()) (Branch ((Tree a) (Tree b))))
+__data Thing () ((MkThing (Int (mid::String) Int)))
+__def_var p
+  MkPair 3 "hi"
+__def_var thing
+  MkThing 4 "yes" 3
+__def_var treeTest
+  Branch (Branch Empty Empty) Empty
+
+print "unboxed pattern matching..."
+print
+  __case (__unboxed 7)
+    (__unboxed 7) "worked"
+    _ "failed"
+
+print "quote pattern matching..."
+print
+  __case (quote (a b))
+    (quote (b b)) "is behaving strangely"
+    (quote (a b)) "worked"
+    _ "failed"
+
+print "__switch on quoted symbol..."
+print
+  __tagswitch (quote a) "failed"
+    (Symbol) "worked"
+
+__def_syntax testIdentEq
+  __macro
+    lambda testIdentEq (tsenv usenv form)
+      __case form
+        [_ s1 s2] [(squote tsenv quote) (ident_eq usenv s1 usenv s2)]
+        _ (throw "invalid testIdentEq form")
+
+__def_syntax bindFV
+  __macro
+    lambda bindFV (tsenv usenv form)
+      __case form
+        [_ a b]
+          (close_syntax tsenv Nil
+            (append (quote (__let ((freeVar "boundVar"))))
+                    [[(squote tsenv \;) (close_syntax usenv
+                                 ##Nil
+                                 [(quote freeVar)] ## the key difference
+                                 a)
+                      (close_syntax usenv Nil b)]])) ## here it's Nil
+##        [a b] [(quote \;) a b]
+        _ (throw "bindFV")
+
+## test free syntax vars
+__let ((freeVar "freeVar"))
+   bindFV
+     print freeVar
+     print freeVar
+
+## ## basically the above expands into code like this...
+## __let ((freeVar "freeVar"))
+##    __let ((freeVar_ALIAS "boundVar"))
+##      print freeVar_ALIAS ; print freeVar
+## ## where the second print statement is unaffected by the introduced let
+
+## do records work?
+print (__record testRecord ((message "records work"))).message
+
+## test constructor set
+__def_syntax viewConstructors
+  __macro
+    lambda viewConstructors (tsenv usenv form)
+      __case form
+        [_ tagSym] [(squote tsenv quote) (constructorSet usenv tagSym)]
+
+print, viewConstructors Yes
+print, viewConstructors Branch
+
+__def_var misc (__import misc "misc.ax")
+print misc.testField
+print "module import works"
+
+defmac __testmatch (tsenv usenv form)
+  [(squote tsenv quote) (__match [(quote a) (quote b)
+    ] form.tail (squote tsenv (throw "damn")) usenv tsenv)]
+
+print
+  __testmatch
+    (Nil Nil) 1
+    (Nil (y:ys)) ys
+    (x (y:ys)) y
+
+print
+  __testmatch
+    (Nil Nil) 1
+    (_ (Nil:ys)) ys
+    (_ (y:ys)) y
+
+defun fieldNames (x) (__call __fieldNames (x))
+print, fieldNames [1]
+print, fieldNames misc
+
+__include misc [[(quote testField) (quote testField)]] ## list of srcName,tgtName pairs
+
+defun testSwitch (x)
+  __tagswitch x "switch failed"
+    (Nil) "switch nil"
+    (\:) "switch cons"
+defun testSwitch2 (x)
+  __switch x "switch failed"
+    ((__unboxed 1) (__unboxed 2)) "1 or 2"
+
+print, testSwitch []
+print, testSwitch [1]
+print, testSwitch2 (__unboxed 1)
+print, testSwitch2 (__unboxed 2)
+print "the next one should fail:"
+print, testSwitch2 (__unboxed 42)
+
+## print
+##   strip_syntax
+##     destructureConsAlt _env _env (quote value) (quote (x:xs))
+##       (quote (f (1+x) xs))
+
+## print
+##   strip_syntax
+##     __mkConsCase _env _env
+##       quote
+##         __consCase value (v (default v))
+##           (x:xs) (f x xs)
+##           (Nil) g
+
+print "pmexp"
+print
+  pmexp
+    __consCase val (v ["couldn't match" v])
+      (x:xs) ["got a list:" [x xs]]
+      (Nil) "it's empty"
+
+defun testConsCase (val)
+  print
+    __consCase val (v ["couldn't match" v])
+      (x:xs) ["got a list:" [x xs]]
+      (Nil) "it's empty"
+
+testConsCase [1 2]
+testConsCase []
+testConsCase 777
+
+## strip_syntax (__mkSwitch _env _env (quote hi) (quote defAlt) [[[(quote __unboxed) 7] 42]])
+
+## print
+##   strip_syntax
+##     __mkConsCase _env _env
+##       quote
+##         __consCase value (v (default v))
+
+## print
+##   strip_syntax
+##     __mkConsCase _env _env
+##       quote
+##         __consCase value (v (default v))
+##           (__unboxed 7) "lucky"
+
+print
+  __consCase (__unboxed 7) (v v)
+    (__unboxed 7) "lucky"
+
+defun (===) (a b)
+  __call __identical (a b)
+
+infixl
+  4 list_map
+print
+  (lambda lift (x) [x]) `list_map` [1 2 3]

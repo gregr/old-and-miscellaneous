@@ -1,0 +1,180 @@
+#public
+(type procthing (void int float))
+
+(const blah 42)
+
+(gdef bleh @int)
+
+(sig sin (double double))
+
+(sig sqrt (double double))
+
+(sig putchar (void char))
+
+(def (sumSqr a b) (double double double)
+     (add (mul a a) (mul b b)))
+
+(def (pythag a b) (double double double)
+     (sqrt (sumSqr a b)))
+
+(def (fibRec n) (int int)
+     (switch int (gt n 1) (n)
+	   (1
+	    (putchar (char 121))
+	    (putchar (char 10))
+	    (= p1 (fibRec (sub n 1)))
+	    (= p2 (fibRec (sub n 2)))
+	    (add p1 p2))))
+
+(sig malloc (@byte uint))
+
+(def (makeHello) (@byte)
+     (= str (reinterpret @char (malloc (uint 6))))
+     (store str 'h')
+     (store (offset str 1) 'e')
+     (store (offset str 2) 'l')
+     (store (offset str 3) 'l')
+     (store (offset str 4) 'o')
+     (store (offset str 5) '\0')
+     str)
+
+(def (printStr str) (void @char)
+     (= ch load str)
+     (switch void (eq ch '\0') ()
+	   (0
+	    (putchar ch)
+	    (printStr (offset str 1)))))
+
+(def (sayHello) (void) (printStr (makeHello)))
+
+(def (testArray) (float)
+     (= v ([float 3] [1 2 3.4]))
+     (extract v 2))
+
+(def (testStruct) (int)
+     (= v ({float int double char int double} {1.5 95 3}))
+     (putchar (resize char (extract v 4)))
+     (= v2 (insert v 42 1)) ## insert makes a new struct/array (functional)
+     (extract v2 1))
+
+(type ntrip {int float double})
+
+(def (sel2nd pt) (@float @ntrip) (select pt 1))
+
+(def (testSel) (float)
+     (= pt (reinterpret @ntrip (malloc (sizeof ntrip))))
+     store pt (ntrip {1 2.4 3.6})
+     (load (sel2nd pt)))
+#end
+
+#######
+# old #
+#######
+sig double sin(double);
+
+sig double sqrt(double);
+
+sig void putchar(char);
+
+def double sumSqr(double a, double b) {
+    a2 = mul a a;
+    b2 = mul b b;
+    sum = add a2 b2;
+    ret sum;
+}
+
+def double pythag(double a, double b) {
+    ss = call sumSqr a b;
+    r = call sqrt ss;
+    ret r;
+}
+
+def int fibRec(int n) {
+#     name = add n 48 int;
+#     nc = resize char name;
+#     call putchar nc;
+#     call putchar 10 char; # newline
+    t = gt n 1 int;
+    r = case int t {n;}
+    [1, {
+# 	    call putchar 121 char;
+# 	    call putchar 10 char;
+	    prev = sub n 1 int;
+	    prev2 = sub n 2 int;
+	    p1 = call fibRec prev;
+	    p2 = call fibRec prev2;
+	    add p1 p2;
+	}
+    ];
+    ret r;
+}
+
+sig @byte malloc(int);
+
+def @byte makeHello() {
+    mem = call malloc 6 int;
+    str = reinterpret @char mem;
+    strE = offset str 1 int;
+    strL1 = offset str 2 int;
+    strL2 = offset str 3 int;
+    strO = offset str 4 int;
+    strNULL = offset str 5 int;
+    store str 104 char;
+    store strE 101 char;
+    store strL1 108 char;
+    store strL2 108 char;
+    store strO 111 char;
+    store strNULL 0 char;
+    ret str;
+}
+
+def void printStr(@char str) {
+    ch = load str;
+    isNull = eq ch 0 char;
+    case void isNull {} [0, {
+	call putchar ch;
+	next = offset str 1 int;
+    	call printStr next;
+    }];
+    ret;
+}
+
+def void sayHello() {
+    hello = call makeHello;
+    call printStr hello;
+    ret;
+}
+
+def float testArray() {
+    v = [1 float 2 float 3.4 float] [float 3];
+    third = extract v 2 uint;
+    ret third;
+}
+
+def int testStruct() {
+    v = {1.5 float 95 int 3 double} {float int double char int double};
+    second = extract v 4 uint;
+    ch = resize char second;
+    call putchar ch;
+    v2 = insert v 42 int 1 uint; # insert makes a new struct/array (functional)
+    second2 = extract v2 1 uint;
+    ret second2;
+}
+
+type ntrip = {int float double};
+
+def @float sel2nd(@ntrip pt) {
+    snd = select pt 1 uint;
+    ret snd;
+}
+
+def float testSel() {
+    sz = sizeof ntrip;
+    mem = call malloc sz;
+    pt = reinterpret @ntrip mem;
+    t = {1 int 2.4 float 3.6 double} ntrip;
+    store pt t;
+    pr = call sel2nd pt;
+    r = load pr;
+    ret r;
+}

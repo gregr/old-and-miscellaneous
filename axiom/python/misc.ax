@@ -1,0 +1,3 @@
+__def_var testField "testing"
+
+__call __print ("a side effect while importing misc")

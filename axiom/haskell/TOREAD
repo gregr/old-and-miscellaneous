@@ -1,0 +1,14 @@
+stg machine: stock hardware
+eval/apply vs. push/enter
+1000248 (brisk)
+new ghc/hugs rts
+conc-ffi
+multiproc
+par-gc
+weak
+
+grin
+ehcstruct
+boquist: opt techniques for lazy langs
+ehc-architecture
+abstrint

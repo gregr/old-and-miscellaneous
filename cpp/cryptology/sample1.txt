@@ -1,0 +1,45 @@
+The evaluation of undergraduate and graduate students will be based on the same items, except that specific requirements of some will be more extensive for graduate students. This will include more difficult requirements for programming assignments and additional problems on standard homeworks.
+
+SINGLE CHARACTER FREQUENCIES
+------------------------------
+ A     19 *       N     17*
+ B      4        O     15
+ C      5        P      4
+ D     15        Q      2
+ E     33 **       R     17*
+ F      7        S     19*
+ G      6        T     22**
+ H      5        U     11
+ I     18 *       V      2
+ J      0        W      4
+ K      1        X      2
+ L     11        Y      0
+ M     12        Z      0
+
+
+ 10 MOST FREQUENT DIGRAMS
+--------------------------
+ EM      6
+ EN      6
+ ME      6
+ NT      6
+ RE      6
+ TS      6
+ AT      5
+ OR      5
+ TE      5
+ AD      4
+
+
+ 10 MOST FREQUENT TRIGRAMS
+---------------------------
+ ENT      5
+ NTS      5
+ GRA      4
+ UAT      4
+ ADU      3
+ AND      3
+ ATE      3
+ DUA      3
+ ILL      3
+ MEN      3

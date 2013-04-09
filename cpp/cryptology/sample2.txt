@@ -1,0 +1,47 @@
+Welcome to my web site on the different Myers-Briggs personalities. I have collected information from several resources, books, lectures I have attended, and magazines (so, no, I did not write the majority of this). This website is strictly for my family, coworkers, and friends. I felt that I needed to create a site which I could share with others what I have learned over the years and to introduce them to important concepts which could improve their lives better. Personally, I have found the Myers-Briggs Type Indicator to be a positive influence on my life and want to share it with you. It has helped me to understand and how to get along better with all of my relationships. At work, I train my teammates to know about the Myers-Briggs types, so they can understand each other better. Finally, it has helped me to understand myself better as well.
+
+The Myers-Briggs Type Indicator is commonly used by corporations and by marriage counselors. Corporations will type their employees and train in the hopes that everybody learns to get along with types that are different from themselves, to communicate better. Marriage counselors use the MBTI to help spouses communicate better through understanding.
+
+ SINGLE CHARACTER FREQUENCIES
+------------------------------
+ A     65 *       N     57 @
+ B     19        O     76 *
+ C     29        P     20
+ D     36        Q      0
+ E    127 **      R     69 *
+ F     18        S     65 *
+ G     17        T    106 **
+ H     46 **      U     21
+ I     71 *       V     11
+ J      1        W     18
+ K      4        X      0
+ L     38        Y     29
+ M     35        Z      1
+
+
+ 10 MOST FREQUENT DIGRAMS
+--------------------------
+ TH     27
+ ER     24
+ ND     20
+ HE     18
+ TE     18
+ AT     16
+ ET     16
+ IT     16
+ RS     15
+ TO     15
+
+
+ 10 MOST FREQUENT TRIGRAMS
+---------------------------
+ THE     15
+ ERS     12
+ AND     11
+ HEM      7
+ TTE      7
+ ATI      6
+ BET      6
+ ETT      6
+ ITH      6
+ NDE      6

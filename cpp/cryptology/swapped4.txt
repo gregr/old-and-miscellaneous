@@ -1,0 +1,67 @@
+RAMSEY THEORY IS OFTEN REGARDED AS THE STUDY OF HOW ORDER EMERGES FROM RANDOMNESS IT HAS APPLICATIONS IN PARALLEL PROGRAMMING APPROXIMATION ALGORITHMS GAME THEORY GEOMETRY NUMBER THEORY AND OTHER AREAS OF MATHEMATICS AND THEORETICAL COMPUTER SCIENCE THE CENTRAL CONCEPT IN RAMSEY THEORY IS THAT OF ARROWING RESEARCH ON THE COMPUTATIONAL ASPECTS OF RAMSEY THEORY TYPICALLY FALLS INTO ONE OF TWO AREAS THE COMPUTATIONAL COMPLEXITY OF PROBLEMS RELATED TO ARROWING AND THE COMPUTATION OF CONCRETE RAMSEY NUMBERS BOTH AREAS ARE VERY ACTIVE HOWEVER UP TO NOW INTERACTION BETWEEN THESE TWO RESEARCH STREAMS HAS BEEN SPORADIC WE PROPOSE TO BRIDGE THESE RESEARCH STREAMS AND IN DOING SO OBTAIN NEW INSIGHTS AND NEW RESULTS IN BOTH AREAS
+
+ORY
+RAMSEY
+COMPUTATION
+BOTHAREAS
+
+ABDEHNORSTW
+
+*W*H**IBJ****H**IJ**J*W**J*W*IBJHI*****B*****
+J*J*J**JH*****W*****JHH*IBWH*****************
+*********************************************
+*********************************************
+*********************************************
+*********************************************
+*********************************************
+*********************************************
+*********************************************
+*********************************************
+*********************************************
+*********************************************
+*********************************************
+*****************************
+
+HWXMDJ NBSFSNIJF AFJQOJXNWJH
+------------------------------
+ S     42 * 6      X      2
+ K      0        L     17
+ N     39 * 7     P     19
+ U      9        Q      0
+ J      0        F     10
+ A     57 * 3      H     27 ** 9
+ M     25 @ 10      I     33 @ 8
+ B      9        O     57* 4
+ W     11        V      3
+ E     78 **1       C     23 @ 11
+ Y     15        G     12
+ D     14        T     57 ** 2
+ R     55 *  5     Z      0
+
+
+ 10 RLHI AFJQOJXI UWMFSRH
+--------------------------
+ TH     20
+ RE     16
+ HE     15
+ AR     12
+ IN     12
+ ER     11
+ RA     11
+ ON     11
+ SE     10
+ OR     10
+
+
+ 10 RLHI AFJQOJXI IFWMFSRH
+---------------------------
+ THE     15
+ AND      6
+ AMS      6
+ ATI      6
+ EOR      6
+ REA      6
+ HEO      6
+ ION      6
+ TIO      6
+ ARE      5

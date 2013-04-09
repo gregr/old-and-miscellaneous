@@ -1,0 +1,55 @@
+alloc
+store
+store_const
+load
+load_const
+branch
+call
+tcall
+
+# u, s, f
+add
+sub
+mul
+div
+mod
+rem
+shl
+lshr
+ashr
+
+eq
+neq
+lt
+lte
+
+and
+or
+xor
+
+types?
+tag
+addr
+char
+int
+uint
+float
+double
+
+
+$procName (int %v, addr %t) {
+
+
+%p = alloc (tag, int, addr); # tuples of types basically sum up to a size/offset
+store tag CCons %p 0;
+store int %v %p tag;
+
+# given %p
+%tag = load tag %p 0;
+(%result, %rtail) = branch tag %tag
+                      [CNil { return (0, %t) },
+                       CCons { %head = load int %p tag;
+                               %tail = load;
+                               return (%head, %tail) }];
+tcall $procName(%result, %rtail)
+}

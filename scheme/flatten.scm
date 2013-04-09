@@ -1,0 +1,16 @@
+(define (empty? x) (null? x))
+(define (char? x) (and (not (empty? x)) (not (pair? x))))
+(define (first x) (car x))
+(define (rest x) (cdr x))
+(define empty '())
+
+(define (flatten s)
+  (define (flatten-onto s rst)
+    (if (empty? s)
+	rst
+	(let ((fst (first s))
+	      (rst (flatten-onto (rest s) rst)))
+	  (if (char? fst)
+	      (cons fst rst)
+	      (flatten-onto fst rst)))))
+  (flatten-onto s empty))

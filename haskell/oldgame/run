@@ -1,0 +1,3 @@
+#! /bin/sh
+
+runhaskell Space.hs one

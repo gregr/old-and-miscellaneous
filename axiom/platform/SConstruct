@@ -1,0 +1,116 @@
+#! /usr/bin/python
+
+BuildDir("build", ".")
+
+posix = "PLATFORM_POSIX"
+win32 = "PLATFORM_WIN32"
+
+gcc = "COMPILER_GCC"
+msvc = "COMPILER_MSVC" # should it really be called msvc?
+
+platforms = dict(
+    posix=posix,
+    win32=win32,
+    )
+
+compilers = dict(
+    gcc=gcc,
+    cl=msvc
+    )
+
+# todo: what does cygwin appear as? map it to posix
+platform = platforms[Platform().name]
+compiler = compilers[Environment()["CC"]]
+
+cppdefines = [platform]#,compiler] # compiler def might be useful later
+ccflags = []
+cpppath = []
+threadLibs = []
+netLibs = []
+
+targets = map(str, BUILD_TARGETS)
+print "targets:", targets
+
+debug = "debug" in targets# or "release" not in targets
+# todo: debug name suffixes for objects and exes to allow multi-target builds
+
+if compiler == gcc:
+    cppdefines += ["_REENTRANT"]
+    ccflags += ["-Wall", "-W"]
+    if debug:
+        ccflags += ["-g"]
+#     else:
+#         ccflags += ["-O2"] # todo: should optimization be a separate target?
+elif compiler == msvc:
+    # todo: link against correct libraries (threaded/static vs. dll/etc.)
+    ccflags += ["/W4", "/EHsc", "/GR"]
+    if debug:
+        # using /MD[d] by default to avoid duplicate linking of CRT
+        # is this a valid concern, or should this simply be /MT[d]?
+        ccflags += ["/MDd", "/Od", "/RTC1"]
+    else:
+        ccflags += ["/MD"]#, "/O2"]
+
+# if not debug:
+#     cppdefines += ["NDEBUG"]
+
+modlibs = {}
+
+def addLibs(objName, libs):
+    prevLibs = modlibs.get(objName, [])
+    modlibs[objName] = prevLibs+libs
+
+def getLibs(objName):
+    return modlibs.get(objName, [])
+
+if platform == posix:
+    addLibs("thread", ["pthread"])
+#    threadLibs += ["pthread"]
+elif platform == win32:
+    # necessary to define getaddrinfo, critical section functions, etc.
+    cppdefines += ["_WIN32_WINNT=0x0501"]
+    addLibs("net", ["ws2_32"])
+#    netLibs += ["ws2_32"]
+
+# basic environment for building sources
+env = Environment(CCFLAGS=ccflags, CPPDEFINES=cppdefines, CPPPATH=cpppath)
+# todo: apparently Copy is deprecated and Clone should be used (if needed)
+
+# for present convenience, put compilation files in the build dir
+defFmt = "build/%s"
+
+def makeObj(modName, format=defFmt, srcExt=".cpp", env=env):
+    return env.Object(format%modName, modName+srcExt)
+
+# force the building of the core modules
+moduleNames = ["error", "thread", "net", "select"]
+modules = dict((name, makeObj(name)) for name in moduleNames)
+# only build modules that are depended on
+#modules = {}
+
+def getObj(name):
+    obj = modules.get(name)
+    if obj is None:
+        obj = makeObj(name)
+    return obj
+
+def getDependedLibs(objNames):
+    return list(set(reduce((lambda a,b:a+b), map(getLibs, objNames))))
+
+def makeProg(objs, env=env):
+    return env.Program(map(getObj, objs), LIBS=getDependedLibs(objs))
+
+threadFiles = ["error", "thread"]
+netFiles = ["error", "net"]
+selectFiles = ["error", "select"]
+selectNetFiles = list(set(selectFiles+netFiles))
+threadNetFiles = list(set(selectFiles+threadFiles+netFiles))
+
+# build test programs
+makeProg(["test_thread"]+threadFiles)
+makeProg(["test_net"]+netFiles)
+makeProg(["test_dns"]+netFiles)
+if platform == posix: # select can't be used for regular file IO on windows
+    makeProg(["test_select"]+selectFiles)
+makeProg(["test_selectnet"]+selectNetFiles)
+makeProg(["test_threadnet"]+threadNetFiles)

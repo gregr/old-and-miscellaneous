@@ -1,0 +1,7 @@
+# windows crud...
+#boostIncDir = "C:\\boost_1_36_0\\"
+#boostLibDir = "."
+
+#Program(["testmachine.cpp", "machine.cpp"], CPPPATH=boostIncDir)
+Program(["runasm.cpp", "assembler.cpp", "machine.cpp"], LIBS="boost_regex", CCFLAGS=["-O3"])#, CPPPATH=boostIncDir, LIBPATH=boostLibDir)
+Program("fibtest.cpp", CCFLAGS=["-O3"])

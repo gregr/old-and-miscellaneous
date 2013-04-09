@@ -1,0 +1,2 @@
+gcc -Wall -c runtime.c
+gcc -Wall -o stst runtime.o stst.s

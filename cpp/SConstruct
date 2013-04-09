@@ -1,0 +1,2 @@
+Program("sizetest.cpp")
+Program('strintern', ['strintern.c', 'strintern2.c'])
