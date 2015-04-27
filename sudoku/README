@@ -1,0 +1,13 @@
+This python program will generate a prolog program which will solve the puzzle you provide.
+
+You'll need to install python and SWI-Prolog:
+http://www.python.org
+http://www.swi-prolog.org
+
+Different prolog implementations don't seem to come with the same standard libraries, so I'm not sure if a different prolog would be able to run the generated programs.
+
+To solve the example puzzle, first run the python program:
+
+	python makesudokusolver.py puzzles/example.txt
+
+You should then be able to double-click the generated file 'puzzles/example.pl' which will automatically run prolog and print out the solution.
